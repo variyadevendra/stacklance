@@ -1,5 +1,4 @@
 import NavHeader from "@/components/blocks/nav-header";
-import Footer from "@/components/blocks/footer";
 import AICanvas from "@/components/ui/canvas";
 import Image from "next/image";
 import Link from "next/link";
@@ -379,11 +378,6 @@ export default function AIDevelopment() {
           </div>
         </section>
       </main>
-
-      {/* Footer with white background */}
-      <footer className="bg-white border-t border-gray-100">
-        <Footer />
-      </footer>
     </div>
   );
 } 

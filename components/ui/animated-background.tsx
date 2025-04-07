@@ -89,7 +89,7 @@ export const AnimatedBackground = ({
       {/* Fixed background with gradient */}
       <div className="fixed inset-0 bg-white">
         {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-white to-indigo-50/40" />
+        <div className="absolute inset-0 bg-white" />
         
         {/* Grid pattern */}
         <div 

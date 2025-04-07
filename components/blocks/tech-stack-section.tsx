@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { MaterialIcon } from "../ui/material-icon";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import StackIcon from "tech-stack-icons";
 
 // Custom SVG components for missing icons
@@ -107,7 +107,23 @@ const TechIcon = ({ name, iconName }: { name: string; iconName: string }) => {
 };
 
 export function TechStackSection() {
-  const [activeCategory, setActiveCategory] = useState("Web App Development");
+  const [activeCategory, setActiveCategory] = useState("Mobile App Development");
+  const rocketControls = useAnimation();
+  
+  // Animation for the rocket icon
+  useEffect(() => {
+    const sequence = async () => {
+      await rocketControls.start({
+        scale: [1, 1.2, 1],
+        transition: { duration: 1.5, ease: "easeInOut" }
+      });
+      setTimeout(sequence, 3000);
+    };
+    
+    sequence();
+    
+    return () => rocketControls.stop();
+  }, [rocketControls]);
   
   const categories = [
     {
@@ -193,18 +209,26 @@ export function TechStackSection() {
   return (
     <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center space-y-8 mb-16">
+        <div className="text-center space-y-6 mb-14">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 bg-blue-50 px-4 py-1.5 rounded-full"
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            whileHover={{ scale: 1.05 }}
+            className="inline-flex items-center justify-center gap-2.5 bg-[#D4F6FF] px-6 py-2 rounded-full border border-[#C6E7FF] cursor-default shadow-sm hover:shadow-md transition-all duration-300"
           >
-            <MaterialIcon 
-              name="rocket_launch"
-              size="sm"
-              className="text-[#516EDE]"
-            />
-            <span className="text-sm font-medium text-[#516EDE]">
+            <motion.span
+              animate={rocketControls}
+              className="text-gray-800"
+            >
+              <MaterialIcon 
+                name="rocket_launch"
+                size="sm"
+                className="h-4 w-4 relative -top-px"
+              />
+            </motion.span>
+            <span className="text-sm font-medium text-gray-800 tracking-wide">
               Cutting-Edge Tech Stack
             </span>
           </motion.div>
@@ -212,7 +236,9 @@ export function TechStackSection() {
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-bold"
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight max-w-3xl mx-auto"
           >
             Technologies that Drive Our Innovation
           </motion.h2>
@@ -221,70 +247,102 @@ export function TechStackSection() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="flex flex-wrap justify-center gap-3 pt-8"
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="flex flex-wrap justify-center gap-3 pt-10 max-w-4xl mx-auto"
           >
-            {categories.map((category) => (
-              <button
+            {categories.map((category, idx) => (
+              <motion.button
                 key={category.name}
                 onClick={() => setActiveCategory(category.name)}
-                className={`px-6 py-2.5 rounded-full transition-all duration-300 ${
+                whileHover={{ 
+                  scale: activeCategory === category.name ? 1.02 : 1.05,
+                  transition: { type: "spring", stiffness: 400, damping: 10 }
+                }}
+                whileTap={{ scale: 0.98 }}
+                className={`px-6 py-3 rounded-full transition-all duration-300 text-sm md:text-base ${
                   activeCategory === category.name
-                    ? "bg-[#516EDE] text-white shadow-lg shadow-blue-200/50 scale-105"
-                    : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-100 hover:border-blue-100"
+                    ? "bg-[#C6E7FF] text-gray-900 shadow-md shadow-[#D4F6FF]/50 border border-[#C6E7FF] font-medium"
+                    : "bg-white text-gray-700 hover:bg-[#D4F6FF]/30 border border-gray-100 hover:border-[#C6E7FF] font-normal"
                 }`}
               >
                 {category.name}
-              </button>
+              </motion.button>
             ))}
           </motion.div>
         </div>
 
         {/* Technologies Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-4"
-        >
-          {categories
-            .find(cat => cat.name === activeCategory)
-            ?.technologies.map((tech, index) => (
-              <motion.div
-                key={tech.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="group relative"
-              >
-                <div className="absolute inset-0 bg-blue-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300" />
-                <div className="relative flex flex-col items-center gap-4 p-6 rounded-2xl border border-gray-100 bg-white hover:border-blue-200 hover:shadow-xl hover:shadow-blue-100/20 transition-all duration-300">
-                  <div className="w-12 h-12 md:w-16 md:h-16 relative group-hover:scale-110 transition-transform duration-300">
-                    <TechIcon 
-                      name={tech.name}
-                      iconName={tech.iconName}
-                    />
-                  </div>
-                  <span className="text-sm md:text-base text-gray-900 font-medium text-center">
-                    {tech.name}
-                  </span>
-                </div>
-              </motion.div>
-            ))}
-        </motion.div>
+        <div className="relative overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeCategory}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-4 md:gap-6"
+            >
+              {categories
+                .find(cat => cat.name === activeCategory)
+                ?.technologies.map((tech, index) => (
+                  <motion.div
+                    key={tech.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ 
+                      delay: index * 0.05,
+                      duration: 0.4,
+                      ease: "easeOut"
+                    }}
+                    whileHover={{ 
+                      scale: 1.05,
+                      rotate: 1,
+                      transition: { type: "spring", stiffness: 400, damping: 10 }
+                    }}
+                    className="group relative"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#C6E7FF] via-[#D4F6FF] to-[#FFDDAE]/30 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300" />
+                    <div className="relative flex flex-col items-center gap-4 p-6 rounded-xl border border-gray-100 bg-white hover:border-[#C6E7FF] hover:shadow-xl hover:shadow-[#D4F6FF]/20 transition-all duration-300">
+                      <div className="w-12 h-12 md:w-16 md:h-16 relative flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <TechIcon 
+                          name={tech.name}
+                          iconName={tech.iconName}
+                        />
+                      </div>
+                      <span className="text-sm md:text-base text-gray-900 font-medium text-center mt-2">
+                        {tech.name}
+                      </span>
+                    </div>
+                  </motion.div>
+                ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
         {/* View All Link */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="mt-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-14 text-center"
         >
-          <button className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-[#516EDE] transition-all duration-300 group">
+          <motion.button 
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-white text-gray-700 border border-gray-100 hover:bg-[#D4F6FF] hover:border-[#C6E7FF] hover:text-gray-900 transition-all duration-300 group"
+            whileHover={{ 
+              scale: 1.05, 
+              transition: { type: "spring", stiffness: 400, damping: 10 }
+            }}
+            whileTap={{ scale: 0.98 }}
+          >
             View All Technologies
             <MaterialIcon 
               name="arrow_forward" 
               size="sm"
               className="transform group-hover:translate-x-1 transition-transform duration-300"
             />
-          </button>
+          </motion.button>
         </motion.div>
       </div>
     </section>

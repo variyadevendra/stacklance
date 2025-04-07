@@ -71,7 +71,7 @@ export async function sendContactEmail(data: EmailData) {
         Html: {
           Data: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <img src="https://your-domain.com/images/stacklance-logo-black.svg" alt="Stacklance" style="width: 180px; margin-bottom: 20px;">
+              <img src="https://your-domain.com/images/stacklance-logo-white.svg" alt="Stacklance" style="width: 180px; margin-bottom: 20px;">
               <h2 style="color: #2563eb;">Thank you for reaching out!</h2>
               <p>Dear ${name},</p>
               <p>We have received your message and appreciate your interest in our ${service} services. Our team will review your request and get back to you within 24-48 hours.</p>

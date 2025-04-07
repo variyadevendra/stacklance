@@ -1,29 +1,27 @@
 "use client";
 
-import { AuroraBackground } from "@/components/ui/aurora-background";
+import dynamic from 'next/dynamic';
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import NavHeader from "@/components/blocks/nav-header";
-import { Hero } from "@/components/ui/animated-hero";
 import { WhyUsSection } from "@/components/blocks/why-us-section";
-import { ServicesStackSection } from "@/components/blocks/services-stack-section";
-import { TestimonialsSection } from "@/components/blocks/testimonials-with-marquee";
 import { IndustrySolutions } from "@/components/blocks/industry-solutions";
-import { LatestWork } from "@/components/blocks/latest-work";
 import { CTASection } from "@/components/blocks/cta-section";
-import Image from "next/image";
-import { AboutSection } from "@/components/blocks/about-section";
 import { TechStackSection } from "@/components/blocks/tech-stack-section";
 import { ContactSection } from "@/components/blocks/contact-section";
-import Footer from "@/components/blocks/footer";
-import Link from "next/link";
-import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { CustomCursor } from "@/components/ui/custom-cursor";
-import { FadeInWhenVisible, FloatingElement } from "@/components/ui/animation-utils";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Service } from "@/components/blocks/service";
 import { AnimatedServices } from "@/components/blocks/animated-services";
 import { ModernTestimonials } from "@/components/blocks/modern-testimonials";
+import { StacklanceTestimonials } from "@/components/blocks/stacklance-testimonials";
+import { EngineeringExcellence } from "@/components/blocks/engineering-excellence";
+import LatestWorkSectionDemo from "@/components/sections/LatestWorkSection";
+import HomeHero from "@/components/blocks/home-hero";
+import { FadeInWhenVisible } from "@/components/ui/fade-in-when-visible";
+
+// Dynamically import components that use client-side only features
+const ProgressBar = dynamic(() => import('@/components/ui/progress-bar').then(mod => mod.ProgressBar), {
+  ssr: false
+});
 
 const services = [
   {
@@ -143,37 +141,21 @@ const testimonials = [
 ];
 
 export default function Home() {
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
-
   const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Main transition timer
+    setIsMounted(true);
     const mainTimer = setTimeout(() => setIsLoading(false), 200);
-    
-    // Failsafe timer in case the loading state gets stuck
-    const failsafeTimer = setTimeout(() => {
-      if (document.body.classList.contains('loading')) {
-        document.body.classList.remove('loading');
-        setIsLoading(false);
-        console.log('Failsafe loading mechanism activated');
-      }
-    }, 2000);
-    
-    // Add loading class to body to handle global loading state
-    document.body.classList.add('loading');
     
     return () => {
       clearTimeout(mainTimer);
-      clearTimeout(failsafeTimer);
-      document.body.classList.remove('loading');
     };
   }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   if (isLoading) {
     return (
@@ -192,11 +174,7 @@ export default function Home() {
 
   return (
     <div className="relative flex flex-col min-h-screen overflow-x-hidden">
-      {/* Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-blue-600 origin-left z-50"
-        style={{ scaleX }}
-      />
+      {isMounted && <ProgressBar />}
 
       {/* Navigation */}
       <div className="fixed top-0 left-0 right-0 z-40">
@@ -204,111 +182,68 @@ export default function Home() {
       </div>
 
       <AnimatedBackground>
-        <main className="flex-grow pt-20">
-          {/* Hero Section */}
-          <FadeInWhenVisible>
-            <section className="relative min-h-[90vh] flex items-center justify-center mb-0">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.8 }}
-                className="w-full"
-              >
-                <Hero />
-              </motion.div>
-            </section>
-          </FadeInWhenVisible>
+        <main className="flex-grow bg-white">
+          <HomeHero />
 
-          {/* Why Us Section */}
-          <section className="relative">
-            <WhyUsSection />
-          </section>
-
-          {/* Services Section */}
+          {/* Services Section - Now First */}
           <FadeInWhenVisible>
-            <section className="relative">
+            <section className="relative py-20 bg-white">
               <AnimatedServices services={services} />
             </section>
           </FadeInWhenVisible>
 
-          {/* Testimonials */}
+          {/* Why Us Section - Now Second */}
           <FadeInWhenVisible>
             <section className="relative">
-              <ModernTestimonials 
-                title="What Our Clients Say"
-                description="Hear from our partners about their transformative experiences with Stacklance solutions"
-                testimonials={testimonials}
-              />
+              <WhyUsSection />
             </section>
           </FadeInWhenVisible>
 
           {/* Industry Solutions */}
           <FadeInWhenVisible>
             <section className="relative">
-              <IndustrySolutions 
-                title="Industry Solutions"
-                subtitle="Transforming businesses across sectors with innovative technology solutions"
-              />
+              <IndustrySolutions />
             </section>
           </FadeInWhenVisible>
 
-          {/* Latest Work */}
+          {/* Tech Stack Section */}
           <FadeInWhenVisible>
             <section className="relative">
-              <div className="py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto">
-                  <LatestWork />
-                </div>
-              </div>
+              <TechStackSection />
             </section>
           </FadeInWhenVisible>
 
-          {/* CTA Section */}
+          {/* Latest Work Section */}
           <FadeInWhenVisible>
             <section className="relative">
-              <div className="py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto">
-                  <CTASection />
-                </div>
-              </div>
+              <LatestWorkSectionDemo />
             </section>
           </FadeInWhenVisible>
 
-          {/* About Section */}
-          <FadeInWhenVisible>
-            <section className="relative">
-              <div className="py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto">
-                  <AboutSection />
-                </div>
-              </div>
-            </section>
-          </FadeInWhenVisible>
+          {/* Testimonials Section */}
+          <StacklanceTestimonials />
 
-          {/* Tech Stack */}
+          {/* Engineering Excellence Section */}
           <FadeInWhenVisible>
             <section className="relative">
-              <div className="py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto">
-                  <TechStackSection />
-                </div>
-              </div>
+              <EngineeringExcellence />
             </section>
           </FadeInWhenVisible>
 
           {/* Contact Section */}
           <FadeInWhenVisible>
             <section className="relative">
-              <div className="py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto">
-                  <ContactSection />
-                </div>
-              </div>
+              <ContactSection />
+            </section>
+          </FadeInWhenVisible>
+
+          {/* CTA Section */}
+          <FadeInWhenVisible>
+            <section className="relative">
+              <CTASection />
             </section>
           </FadeInWhenVisible>
         </main>
-
-        <Footer />
       </AnimatedBackground>
     </div>
   );

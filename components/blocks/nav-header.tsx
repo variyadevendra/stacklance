@@ -8,7 +8,67 @@ import { cn } from "@/lib/utils";
 import { IconBrandWhatsapp, IconMenu2, IconX, IconSun, IconMoon } from "@tabler/icons-react";
 
 const navLinks = [
-  { href: "/services", label: "Services" },
+  { 
+    href: "/services", 
+    label: "Services",
+    dropdown: true,
+    items: [
+      {
+        href: "/services/product-strategy",
+        label: "Product Strategy & Roadmapping",
+        description: "Transform your vision into a concrete action plan. We help define your product strategy, create detailed roadmaps, and establish clear milestones for successful delivery.",
+        icon: "/images/services/strategy.svg"
+      },
+      {
+        href: "/services/ai-development",
+        label: "AI Development",
+        description: "Harness the power of artificial intelligence with custom ML models, NLP solutions, and intelligent automation. We build AI that drives real business outcomes.",
+        icon: "/images/services/ai-dev.svg"
+      },
+      {
+        href: "/services/web-development",
+        label: "Web & App Development",
+        description: "Build powerful, scalable applications using cutting-edge technologies. From responsive websites to complex enterprise solutions, we deliver robust digital experiences.",
+        icon: "/images/services/web-dev.svg"
+      },
+      {
+        href: "/services/ui-ux-design",
+        label: "UI/UX Design",
+        description: "Create intuitive, engaging user experiences that delight your customers. Our design process combines aesthetics with functionality for maximum impact.",
+        icon: "/images/services/design.svg"
+      },
+      {
+        href: "/services/devops",
+        label: "DevOps & Cloud Infrastructure",
+        description: "Optimize your development pipeline and cloud infrastructure for maximum efficiency. We implement modern DevOps practices and cloud-native solutions.",
+        icon: "/images/services/cloud.svg"
+      },
+      {
+        href: "/services/mvp",
+        label: "MVP to Scalable Architecture",
+        description: "Launch your MVP quickly and evolve it into a robust, scalable solution. We help validate your ideas and build foundations that support growth.",
+        icon: "/images/services/mvp.svg"
+      },
+      {
+        href: "/services/dedicated-teams",
+        label: "Dedicated Product Teams",
+        description: "Get a dedicated team of experts who understand your business goals. We provide skilled developers, designers, and managers who work as an extension of your team.",
+        icon: "/images/services/team.svg"
+      },
+      {
+        href: "/services/cyber-security",
+        label: "Cyber Security",
+        description: "Protect your digital assets with comprehensive security solutions. From threat detection to secure development practices, we keep your systems safe.",
+        icon: "/images/services/security.svg"
+      },
+      {
+        href: "/services/digital-marketing",
+        label: "Digital Marketing & SEO",
+        description: "Drive growth with data-driven digital marketing strategies. We help optimize your online presence and convert visitors into loyal customers.",
+        icon: "/images/services/marketing.svg"
+      }
+    ]
+  },
   { href: "/work", label: "Work" },
   { href: "/about", label: "About Us" },
   { href: "/blog", label: "Blog" },
@@ -34,8 +94,8 @@ export default function NavHeader() {
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           isScrolled
-            ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-sm"
-            : "bg-transparent"
+            ? "bg-white shadow-sm"
+            : "bg-white"
         )}
       >
         <nav className="container mx-auto px-4 h-20">
@@ -46,7 +106,7 @@ export default function NavHeader() {
                 whileHover={{ scale: 1.05 }}
                 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600"
               >
-                <img src="/images/stacklance-logo-black.svg" alt="Stacklance" width={140} height={35} />
+                <img src="/images/stacklance-logo-white.svg" alt="Stacklance" width={140} height={35} />
               </motion.div>
               <div className="absolute -inset-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
             </Link>
@@ -54,16 +114,60 @@ export default function NavHeader() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="relative group py-2"
-                >
-                  <span className="text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
-                    {link.label}
-                  </span>
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-full" />
-                </Link>
+                <div key={link.href} className="relative group">
+                  <Link
+                    href={link.href}
+                    className="relative group py-2"
+                  >
+                    <span className="text-gray-600 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors flex items-center gap-1">
+                      {link.label}
+                      {link.dropdown && (
+                        <svg
+                          className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left rounded-full" />
+                  </Link>
+
+                  {link.dropdown && (
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <div className="w-[840px] bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 p-6">
+                        <div className="grid grid-cols-3 gap-5">
+                          {link.items?.map((item) => (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors group/item"
+                            >
+                              <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-blue-50/50 dark:bg-blue-900/10 flex items-center justify-center">
+                                <img src={item.icon} alt={item.label} className="w-5 h-5" />
+                              </div>
+                              <div>
+                                <h4 className="text-[15px] font-medium text-gray-900 dark:text-white">
+                                  {item.label}
+                                </h4>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                                  {item.description}
+                                </p>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
 

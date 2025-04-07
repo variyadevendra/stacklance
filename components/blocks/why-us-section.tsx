@@ -189,7 +189,7 @@ const benefits = [
     description: "Future-proof architecture that grows with your success. From MVP to millions of users, our solutions are engineered for seamless scaling.",
     icon: "trending_up",
     theme: "indigo",
-    stats: { value: "99.9%", label: "Uptime Guarantee" },
+    stats: { value: "99.9%", label: "Uptime" },
     proof: "Backed by battle-tested infrastructure",
     features: ["Auto-scaling", "Global CDN", "Load Testing"]
   },
@@ -204,6 +204,29 @@ const benefits = [
   }
 ];
 
+// Add animation variants for the benefit cards
+const cardVariants = {
+  hidden: { 
+    opacity: 0, 
+    y: 20
+  },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { 
+      duration: 0.5,
+      ease: [0.25, 0.1, 0.25, 1.0]
+    }
+  },
+  hover: {
+    y: -8,
+    transition: { 
+      duration: 0.3, 
+      ease: [0.25, 0.1, 0.25, 1.0]
+    }
+  }
+};
+
 const StaggeredBenefit = ({ benefit, index, scrollDirection }: { benefit: typeof benefits[0]; index: number; scrollDirection: 'up' | 'down' }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { 
@@ -211,31 +234,6 @@ const StaggeredBenefit = ({ benefit, index, scrollDirection }: { benefit: typeof
     margin: "-50px 0px"
   });
   const [isHovered, setIsHovered] = useState(false);
-
-  // Enhanced animation variants
-  const cardVariants = {
-    hidden: { 
-      opacity: 0, 
-      y: 20
-    },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { 
-        duration: 0.5,
-        delay: index * 0.1,
-        ease: [0.25, 0.1, 0.25, 1.0]
-      }
-    },
-    hover: {
-      y: -8,
-      boxShadow: "0 15px 30px -5px rgba(0, 0, 0, 0.1), 0 10px 15px -5px rgba(0, 0, 0, 0.05)",
-      transition: { 
-        duration: 0.3, 
-        ease: [0.25, 0.1, 0.25, 1.0]
-      }
-    }
-  };
 
   return (
     <motion.div
@@ -249,158 +247,82 @@ const StaggeredBenefit = ({ benefit, index, scrollDirection }: { benefit: typeof
       className="relative group h-full"
     >
       <div className={cn(
-        "h-full p-6 sm:p-7",
-        "bg-white/95 dark:bg-gray-800/80",
-        "backdrop-blur-sm",
-        "rounded-xl",
-        "border border-gray-100 dark:border-gray-700/60",
+        "h-full p-8",
+        "bg-white",
+        "rounded-2xl",
+        "border border-gray-100",
         "transition-all duration-300",
-        "hover:shadow-xl dark:hover:shadow-gray-900/20",
         "flex flex-col",
         "overflow-hidden"
       )}>
-        {/* Animated background gradient */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br opacity-0 -z-10" 
-          animate={{ 
-            opacity: isHovered ? 0.08 : 0,
-            backgroundPosition: isHovered ? ["0% 0%", "100% 100%"] : "0% 0%"
-          }}
-          transition={{ duration: 1.5 }}
-          style={{
-            backgroundSize: "200% 200%",
-            background: `linear-gradient(135deg, ${getGradientColors(benefit.theme)})`,
-          }}
-        />
-
-        {/* Main Content Container - Fixed Height for Consistent Alignment */}
-        <div className="flex flex-col min-h-[420px]">
-          {/* Top Content Section */}
-          <div className="flex-1 flex flex-col gap-6">
-            {/* Icon and Title Section */}
-            <div className="flex items-start gap-4">
-              <div className={cn(
-                "w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0",
-                "bg-gradient-to-br",
-                "from-indigo-50 to-indigo-100",
-                "dark:from-indigo-900/30 dark:to-indigo-800/30",
-                "shadow-sm",
-                "border border-indigo-100/50 dark:border-indigo-700/30"
-              )}>
-                <MaterialIcon
-                  name={benefit.icon}
-                  className={cn(
-                    "w-6 h-6",
-                    "text-indigo-600 dark:text-indigo-400",
-                    "transform transition-transform group-hover:scale-110 duration-300"
-                  )}
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                  {benefit.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  {benefit.description}
-                </p>
-              </div>
+        {/* Main Content Container */}
+        <div className="flex flex-col h-full">
+          {/* Icon and Title Section */}
+          <div className="flex items-start gap-5 mb-4">
+            <div className={cn(
+              "w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0",
+              "bg-[#C6E7FF] border border-[#D4F6FF]"
+            )}>
+              <MaterialIcon
+                name={benefit.icon}
+                className="w-6 h-6 text-[#000000]"
+              />
             </div>
-
-            {/* Features List */}
-            <div className="flex-1">
-              <ul className="space-y-3">
-                {benefit.features.map((feature, i) => (
-                  <motion.li 
-                    key={feature}
-                    initial={{ opacity: 0, x: -5 }}
-                    animate={{ opacity: isInView ? 1 : 0, x: isInView ? 0 : -5 }}
-                    transition={{ delay: 0.3 + (i * 0.1), duration: 0.3 }}
-                    className="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-300"
-                  >
-                    <span className={cn(
-                      "flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5",
-                      getBgColorFromTheme(benefit.theme, '500/10'),
-                      getTextColorFromTheme(benefit.theme, '500')
-                    )}>
-                      <MaterialIcon
-                        name="check"
-                        className="w-3 h-3"
-                      />
-                    </span>
-                    <span>{feature}</span>
-                  </motion.li>
-                ))}
-              </ul>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                {benefit.title}
+              </h3>
+              <p className="text-gray-600 text-[15px] leading-relaxed">
+                {benefit.description}
+              </p>
             </div>
           </div>
 
-          {/* Stats Card - Always at Bottom */}
-          <div className={cn(
-            "mt-6 p-5 rounded-2xl relative group/stats",
-            "bg-gradient-to-br from-white to-gray-50/80",
-            "dark:from-gray-800/90 dark:to-gray-900/80",
-            "backdrop-blur-xl",
-            "border border-gray-100/80 dark:border-gray-700/50",
-            "shadow-sm hover:shadow-md",
-            "transition-all duration-300 ease-in-out",
-            "hover:scale-[1.02] hover:bg-white dark:hover:bg-gray-800"
-          )}>
-            {/* Background glow effect */}
-            <div className={cn(
-              "absolute inset-0 rounded-2xl opacity-0 group-hover/stats:opacity-100",
-              "bg-gradient-to-br from-indigo-500/5 to-indigo-600/5",
-              "transition-opacity duration-300"
-            )} />
+          {/* Features List */}
+          <div className="mt-6 mb-8">
+            <ul className="space-y-3">
+              {benefit.features.map((feature, i) => (
+                <motion.li 
+                  key={feature}
+                  initial={{ opacity: 0, x: -5 }}
+                  animate={{ opacity: isInView ? 1 : 0, x: isInView ? 0 : -5 }}
+                  transition={{ delay: 0.3 + (i * 0.1), duration: 0.3 }}
+                  className="flex items-center gap-3"
+                >
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center bg-[#D4F6FF] border border-[#C6E7FF]">
+                    <MaterialIcon
+                      name="check"
+                      className="w-3.5 h-3.5 text-[#000000]"
+                    />
+                  </span>
+                  <span className="text-[15px] text-gray-600">{feature}</span>
+                </motion.li>
+              ))}
+            </ul>
+          </div>
 
-            <div className="relative flex flex-col items-center text-center">
-              {/* Icon Container */}
-              <div className={cn(
-                "mb-3.5",
-                "flex items-center justify-center",
-                "w-10 h-10 rounded-xl",
-                "bg-gradient-to-br from-indigo-50 to-indigo-100/50",
-                "dark:from-indigo-900/30 dark:to-indigo-800/30",
-                "border border-indigo-100/50 dark:border-indigo-700/30",
-                "overflow-hidden"
-              )}>
-                {/* Icon with consistent sizing */}
-                <div className="flex items-center justify-center w-5 h-5">
+          {/* Stats Card - Bottom Section */}
+          <div className="mt-auto pt-6 border-t border-gray-100">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4">
+                <div className="w-12 h-12 rounded-xl bg-[#FFDDAE] border border-[#FFDDAE]/70 flex items-center justify-center mx-auto">
                   <MaterialIcon
                     name={getStatIcon(benefit.stats.label)}
-                    className={cn(
-                      "w-full h-full",
-                      "text-indigo-600 dark:text-indigo-400",
-                      "transform transition-transform group-hover/stats:scale-110 duration-300"
-                    )}
+                    className="w-6 h-6 text-[#000000]"
                   />
                 </div>
               </div>
-
-              {/* Stat Content */}
-              <div className="flex flex-col items-center space-y-2">
-                <div className="flex flex-col items-center">
-                  <span className={cn(
-                    "text-h3 font-bold leading-none mb-1.5",
-                    "gradient-text"
-                  )}>
-                    {benefit.stats.value}
-                  </span>
-                  <span className="text-body-sm font-medium text-gray-600 dark:text-gray-400">
-                    {benefit.stats.label}
-                  </span>
-                </div>
-
-                {/* Proof Text */}
-                <p className={cn(
-                  "text-caption text-gray-500 dark:text-gray-400",
-                  "max-w-[180px] mx-auto mt-1",
-                  "leading-snug",
-                  "opacity-80 group-hover/stats:opacity-100",
-                  "transition-opacity duration-300"
-                )}>
-                  {benefit.proof}
+              <div className="flex flex-col items-center">
+                <p className="text-2xl font-semibold text-gray-900 mb-1">
+                  {benefit.stats.value}
+                </p>
+                <p className="text-[15px] text-gray-500">
+                  {benefit.stats.label}
                 </p>
               </div>
+              <p className="mt-4 text-[14px] text-gray-500">
+                {benefit.proof}
+              </p>
             </div>
           </div>
         </div>
@@ -1656,148 +1578,76 @@ const Section = ({ section, isActive, scrollDirection }: { section: typeof secti
 };
 
 export const WhyUsSection = () => {
-  const [activeSection, setActiveSection] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  // Global scroll direction tracking
-  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('down');
-  const lastScrollY = useRef(typeof window !== 'undefined' ? window.scrollY : 0);
-  
-  useEffect(() => {
-    const handleScroll = () => {
-      if (typeof window === 'undefined') return;
-      const currentScrollY = window.scrollY;
-      if (currentScrollY < lastScrollY.current) {
-        setScrollDirection('up');
-      } else {
-        setScrollDirection('down');
-      }
-      lastScrollY.current = currentScrollY;
-    };
-    
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const headerRef = useRef(null);
-  const isHeaderInView = useInView(headerRef, { once: false, amount: 0.3 });
-  
   const benefitsGridRef = useRef(null);
   const isBenefitsInView = useInView(benefitsGridRef, { once: false, amount: 0.2 });
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('down');
 
   return (
-    <section ref={containerRef} className="relative py-8 sm:py-10 md:py-12 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative py-24 overflow-hidden bg-white">
+      <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div ref={headerRef} className="text-center mb-8 sm:mb-10 max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.9 }}
-            animate={isHeaderInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-            transition={{ duration: 0.5 }}
-            className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-caption font-medium mb-3"
-          >
-            <span className="relative">
-              Why Choose Stacklance
-              <motion.span
-                className="absolute bottom-0 left-0 h-[2px] bg-indigo-500 dark:bg-indigo-400"
-                initial={{ width: "0%" }}
-                animate={isHeaderInView ? { width: "100%" } : { width: "0%" }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-              />
-            </span>
-          </motion.div>
-          
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-display gradient-text mb-4"
-          >
+        <div className="text-center max-w-3xl mx-auto mb-20">
+          {/* Tag */}
+          <div className="flex justify-center">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-[#D4F6FF] border border-[#C6E7FF]">
+              <span className="text-[#000000] text-sm font-medium">
+                Why Choose Stacklance
+              </span>
+            </div>
+          </div>
+
+          {/* Title */}
+          <h2 className="text-[56px] leading-[1.1] font-semibold text-gray-900 mt-8 mb-5">
             Engineered for Impact
-          </motion.h2>
-          
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={isHeaderInView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.4, delay: 0.4 }}
-            className="h-1 w-32 bg-gradient-to-r from-indigo-400 to-indigo-600 dark:from-indigo-500 dark:to-indigo-300 mx-auto mb-4 rounded-full"
-          ></motion.div>
-          
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isHeaderInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="text-body-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
-          >
+          </h2>
+
+          {/* Subtitle */}
+          <p className="text-xl text-gray-600">
             Fast. Focused. Future-ready.
-          </motion.p>
+          </p>
         </div>
-        
+
         {/* Benefits Grid */}
         <div 
           ref={benefitsGridRef}
-          className="relative mb-6 sm:mb-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
         >
-          {/* Background pattern */}
-          <div className="absolute inset-0 bg-grid-gray-200/30 dark:bg-grid-gray-900/20 -z-10 [mask-image:linear-gradient(to_bottom,transparent_0%,black_40%,black_60%,transparent_100%)]" />
-          
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={isBenefitsInView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
-          >
-            {benefits.map((benefit, index) => (
-              <div 
-                key={benefit.title}
+          {benefits.map((benefit, index) => (
+            <div 
+              key={benefit.title}
+              className="h-full"
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={isBenefitsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: 0.1 + (index * 0.1),
+                  ease: [0.25, 0.1, 0.25, 1.0]
+                }}
                 className="h-full"
               >
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isBenefitsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                  transition={{ 
-                    duration: 0.5, 
-                    delay: 0.1 + (index * 0.1),
-                    ease: [0.25, 0.1, 0.25, 1.0]
-                  }}
-                  className="h-full"
-                >
-                  <StaggeredBenefit 
-                    benefit={benefit} 
-                    index={index} 
-                    scrollDirection={scrollDirection} 
-                  />
-                </motion.div>
-              </div>
-            ))}
-          </motion.div>
+                <StaggeredBenefit 
+                  benefit={benefit} 
+                  index={index} 
+                  scrollDirection={scrollDirection} 
+                />
+              </motion.div>
+            </div>
+          ))}
         </div>
-
-        {/* Visual separator - reduced margins */}
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={isHeaderInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 0.5, delay: 1.2 }}
-          className="my-6 sm:my-8 flex justify-center"
-        >
-          <div className="h-px w-32 sm:w-40 md:w-60 bg-gradient-to-r from-transparent via-indigo-300 dark:via-indigo-700 to-transparent opacity-70"></div>
-        </motion.div>
       </div>
     </section>
   );
 };
 
-// Update or add the getStatIcon function
+// Update the getStatIcon function
 function getStatIcon(label: string): string {
   const iconMap: { [key: string]: string } = {
     'Success Rate': 'verified',
     'Faster Delivery': 'speed',
-    'Uptime Guarantee': 'shield_check',
-    'Team Access': 'support_agent',
+    'Uptime': 'shield',
+    'Team Access': 'groups',
   };
   return iconMap[label] || 'analytics';
 } 

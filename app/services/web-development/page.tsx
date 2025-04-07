@@ -1,4 +1,5 @@
 import { type Metadata } from "next";
+import ClientLogosSection from "@/components/sections/ClientLogosSection";
 
 export const metadata: Metadata = {
   title: "Web Development Services | Stacklance",
@@ -71,6 +72,14 @@ export default function WebDevelopmentPage() {
                 </span>
               ))}
             </div>
+          </div>
+
+          {/* Client Logos Section */}
+          <div className="mb-20">
+            <ClientLogosSection 
+              title="Clients We've Worked With" 
+              subtitle="Trusted by industry leaders to deliver cutting-edge web solutions"
+            />
           </div>
 
           {/* CTA Section */}
